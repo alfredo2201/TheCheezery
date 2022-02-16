@@ -17,13 +17,31 @@ class productsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_products)
-        agregaProductos()
-
+        if (coldDrinks.size == 0 && hotDrinks.size == 0 && sweets.size ==0 && salties.size == 0) {
+            agregaProductos()
+        }
         var listView: ListView = findViewById(R.id.listView) as ListView
-        var adaptador: AdapterProduct = AdapterProduct( hotDrinks, this)
+        var imageTitle:ImageView = findViewById(R.id.imageTitle)
+        var valor = this.intent.extras?.getString("tipo")
+
+        var adaptador: AdapterProduct = AdapterProduct( hotDrinks, this) as AdapterProduct
+        if (valor.equals("hot")) {
+            adaptador = AdapterProduct( hotDrinks, this)
+            imageTitle.setImageResource(R.drawable.hotdrinks)
+        }else if (valor.equals("cold")){
+            adaptador = AdapterProduct( coldDrinks, this)
+            imageTitle.setImageResource(R.drawable.colddrinks)
+        }else if (valor.equals("sweets")){
+            adaptador = AdapterProduct( sweets, this)
+            imageTitle.setImageResource(R.drawable.sweets)
+        }else if (valor.equals("salties")) {
+            adaptador = AdapterProduct(salties, this)
+            imageTitle.setImageResource(R.drawable.salties)
+        }
+
         listView.adapter = adaptador
     }
-    fun agregaProductos(){
+    private fun agregaProductos(){
         coldDrinks.add(Product("Caramel Frap", R.drawable.caramelfrap, "Caramel syrup meets coffee, milk and ice and whipped cream and buttery caramel sauce layer the love on top.", 5))
         coldDrinks.add(Product("Chocolate Frap", R.drawable.chocolatefrap, "Rich mocha-flavored sauce meets up with chocolaty chips, milk and ice for a blender bash.", 6))
         coldDrinks.add(Product("Cold Brew", R.drawable.coldbrew, "Created by steeping medium-to-coarse ground coffee in room temperature water for 12 hours or longer.", 3))
@@ -57,8 +75,8 @@ class productsActivity : AppCompatActivity() {
     private class AdapterProduct: BaseAdapter{
         var productos = ArrayList<Product>()
         var contexto: Context? = null
-        constructor(productos:ArrayList<Product> , contexto:Context?){
-            this.productos = productos
+        constructor(listaProductos:ArrayList<Product>, contexto:Context?){
+            this.productos = listaProductos
             this.contexto = contexto
         }
 
@@ -85,14 +103,11 @@ class productsActivity : AppCompatActivity() {
             var precio = vista.findViewById(R.id.product_price) as TextView
 
             image.setImageResource(prod.image)
-            nombre.setText(prod.name)
-            desc.setText(prod.description)
-            precio.setText("$${prod.price}")
+            nombre.text = prod.name
+            desc.text = prod.description
+            precio.text = "$${prod.price}"
             return vista
         }
-
-    }
-    fun tipoBtn(numeroBtn:Int){
 
     }
 }
